@@ -47,4 +47,11 @@ public class HttpRequestTest {
         String expectedCalculation = "35";
         assertThat(actualCalculationResponse).isEqualTo(expectedCalculation);
     }
+
+    @Test
+    public void shouldSubscriptionTopics() throws Exception {
+        String daprSubscribeUrl = "http://localhost:" + port + "/dapr/subscribe";
+        String actualResponse = this.restTemplate.getForObject(daprSubscribeUrl, String.class);
+        assertThat(actualResponse).isEqualTo("[\"topic-addition\"]");
+    }
 }

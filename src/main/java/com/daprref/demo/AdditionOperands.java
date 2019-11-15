@@ -28,5 +28,4 @@ public class AdditionOperands {
     public void setOperand2(Integer value) {
         this.operand2 = value;
     }
-
 }

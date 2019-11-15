@@ -43,7 +43,7 @@ public class DaprServerTestingOrchestrator {
         if (process != null) process.getOutputStream().close();
     }
 
-    private Process runCommandAndWaitUntil(String command, String endOfProcessTextTrigger) {
+    protected Process runCommandAndWaitUntil(String command, String endOfProcessTextTrigger) {
         Process p = null;
         try {
             p = Runtime.getRuntime().exec(command);

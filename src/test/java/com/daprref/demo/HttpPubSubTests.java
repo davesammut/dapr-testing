@@ -21,20 +21,20 @@ public class HttpPubSubTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    ///dapr/subscribe
-//    res.json([
-//            'A',
-//            'B'
-//            ]);
-//    /A
-//    /B
     @Test
     public void subscriberTopicAdditionMessageConsumer() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
 //        {"operand1":20,"operand2":15}
-        String payload = "{\"operand1\":20,\"operand2\":15}";
+        AdditionOperands additionOperands = new AdditionOperands();
+        additionOperands.setOperand1(10);
+        additionOperands.setOperand2(5);
+
+        DaprMessage daprMessage = new DaprMessage("some id", "source", "type", "specversion", "datacontenttype", additionOperands);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String payload = mapper.writeValueAsString(daprMessage);
 
         HttpEntity<String> request = new HttpEntity<String>(payload, headers);
         String additionTopicUrl = "http://localhost:" + port + "/topic-addition";
@@ -45,7 +45,7 @@ public class HttpPubSubTests {
         // TODO: test case using http mock to assert that the result of the addition is sent as a subscriber
     }
 
-    @Test
+//    @Test //TODO: Review invalid payload approach
     public void subscriberTopicAdditionMessageConsumerWithInvalidPayload() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

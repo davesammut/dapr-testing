@@ -33,7 +33,6 @@ public class DaprHttpRequestTest extends DaprServerTestingOrchestrator {
 
         HttpEntity httpEntity = response.getEntity();
         String actualResponse = EntityUtils.toString(httpEntity);
-//      System.out.println("ACTUAL RESPONSE: " + actualResponse);
 
         assertThat(response.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_OK);
         assertThat(actualResponse).isEqualTo(expectedResponse);
