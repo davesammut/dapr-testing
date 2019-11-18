@@ -48,15 +48,22 @@ public class DaprHttpPubSubTests extends DaprServerTestingOrchestrator {
     @Test
     public void additionPublishSubscriptionTest() throws IOException, InterruptedException {
         AdditionOperands additionOperands = new AdditionOperands();
-        additionOperands.setOperand1(80);
-        additionOperands.setOperand2(10);
+        additionOperands.setOperand1(12);
+        additionOperands.setOperand2(6);
+        String expectedResponse = "18";
         ObjectMapper mapper = new ObjectMapper();
-        String daprPublishCommand = "dapr publish --topic topic-addition --payload " + mapper.writeValueAsString(additionOperands);
-        this.runCommandAndWaitUntil(daprPublishCommand, "Event published successfully");
+
+        String calculationPublishTrigger = "http://localhost:8080/topic-addition-publish-trigger";
+        HttpPost postRequest = new HttpPost(calculationPublishTrigger);
+        postRequest.setEntity(new StringEntity(mapper.writeValueAsString(additionOperands)));
+        postRequest.addHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+
+        DefaultHttpClient httpPostClient = new DefaultHttpClient();
+        CloseableHttpResponse postResponse = httpPostClient.execute(postRequest);
+        assertThat(postResponse.getStatusLine().getStatusCode()).isEqualTo(HttpStatus.SC_OK);
 
         //TODO: Trigger this test by Posting AdditionOperands payload to a URL which is responsible for the publishing of an addition calculation message
 
-        String expectedResponse = "90";
         Thread.sleep(2000); // Hack to wait for the message to be consumed and state updated before checking. TODO: Adopt a retry (number of times) until state has changed.
         String calculationResultUrl = "http://localhost:8080/calculation-result";
 

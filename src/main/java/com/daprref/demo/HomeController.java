@@ -2,11 +2,10 @@ package com.daprref.demo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +14,8 @@ import java.util.List;
 public class HomeController {
 
     private Integer calculationResult;
+    private final Integer daprPort = 3500;
+    private final String daprPublishUrl = String.format("http://localhost:%d/v1.0/publish/topic-addition", daprPort);
 
     @RequestMapping("/calculation-result")
     public @ResponseBody ResponseEntity greeting() {
@@ -51,7 +52,15 @@ public class HomeController {
     @ResponseBody
     public ResponseEntity additionCalculationPublishTrigger(@RequestBody AdditionOperands additionOperands) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        return new ResponseEntity(HttpStatus.OK);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<String>(mapper.writeValueAsString(additionOperands), headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity responseEntity = restTemplate.postForEntity(daprPublishUrl, requestEntity, String.class);
+
+        return new ResponseEntity(responseEntity.getStatusCode());
     }
 
     @GetMapping(
