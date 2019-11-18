@@ -45,6 +45,26 @@ public class HttpPubSubTests {
         // TODO: test case using http mock to assert that the result of the addition is sent as a subscriber
     }
 
+    @Test
+    public void publishTopicAdditionTrigger() throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        AdditionOperands additionOperands = new AdditionOperands();
+        additionOperands.setOperand1(10);
+        additionOperands.setOperand2(5);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String payload = mapper.writeValueAsString(additionOperands);
+
+        HttpEntity<String> request = new HttpEntity<String>(payload, headers);
+        String additionTopicUrl = "http://localhost:" + port + "/topic-addition-publish-trigger";
+
+        ResponseEntity responseEntity  = this.restTemplate.postForEntity(additionTopicUrl, request, ResponseEntity.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
 //    @Test //TODO: Review invalid payload approach
     public void subscriberTopicAdditionMessageConsumerWithInvalidPayload() throws Exception {
         HttpHeaders headers = new HttpHeaders();

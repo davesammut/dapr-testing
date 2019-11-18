@@ -38,9 +38,20 @@ public class HomeController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public String createPerson(@RequestBody AdditionOperands additionOperands) throws JsonProcessingException {
+    public String additionCalculation(@RequestBody AdditionOperands additionOperands) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(Calculator.add(additionOperands.getOperand1(), additionOperands.getOperand2()));
+    }
+
+    @RequestMapping(
+            value = "/topic-addition-publish-trigger",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ResponseEntity additionCalculationPublishTrigger(@RequestBody AdditionOperands additionOperands) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping(
