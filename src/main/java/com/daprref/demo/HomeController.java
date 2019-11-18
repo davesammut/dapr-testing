@@ -2,6 +2,7 @@ package com.daprref.demo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,10 @@ import java.util.List;
 public class HomeController {
 
     private Integer calculationResult;
-    private final Integer daprPort = 3500;
-    private final String daprPublishUrl = String.format("http://localhost:%d/v1.0/publish/topic-addition", daprPort);
+
+    @Value("${dapr.port}")
+    private String daprPort = "3500"; // TODO: Inject using environment variables
+    private final String daprPublishUrl = String.format("http://localhost:%s/v1.0/publish/topic-addition", daprPort);
 
     @RequestMapping("/calculation-result")
     public @ResponseBody ResponseEntity greeting() {
