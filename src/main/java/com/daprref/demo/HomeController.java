@@ -68,7 +68,6 @@ public class HomeController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public @ResponseBody String subscribeToTopics() throws JsonProcessingException {
-        System.out.println("SUBSCRIBE DAPR ENDPOINT CALLED!");
         List topics = Collections.singletonList("topic-addition");
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(topics);
@@ -80,14 +79,6 @@ public class HomeController {
     )
     @ResponseBody
     public ResponseEntity topicAddition(@RequestBody String message) throws JsonProcessingException {
-
-//        if(additionOperands.getOperand1() == null || additionOperands.getOperand2() == null) {
-//            System.out.println("Invalid topic-addition payload");
-//            return new ResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY);
-//        }
-//        calculationResult = Calculator.add(additionOperands.getOperand1(), additionOperands.getOperand2());
-//        System.out.println("Successfully processed topic-addition payload Operand1 [" + additionOperands.getOperand1() + "] Operand2 [" + additionOperands.getOperand2() + "]");
-        System.out.println("Topic Subscriber topic-addition CALLED " + message);
         ObjectMapper mapper = new ObjectMapper();
         DaprMessage daprMessage = mapper.readValue(message, DaprMessage.class);
         calculationResult = Calculator.add(daprMessage.getData().getOperand1(), daprMessage.getData().getOperand2());
