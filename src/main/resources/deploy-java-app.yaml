@@ -1,0 +1,42 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: additionapp
+  labels:
+    app: addition
+spec:
+  selector:
+    app: addition
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: additionapp
+  labels:
+    app: addition
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: addition
+  template:
+    metadata:
+      labels:
+        app: addition
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/id: "addition"
+        dapr.io/port: "80"
+    spec:
+      containers:
+        - name: addition
+          image: davesammut/addition-app-java
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Always
